@@ -6,7 +6,7 @@ const poll_for_rebuild = (api, poll_url, fn) =>
     .then(
       resp =>
         resp.body.finished
-          ? fn(null, true)
+          ? fn(null, res.body.results)
           : setTimeout(() => poll_for_rebuild(api, poll_url, fn), 100)
     );
 
@@ -28,7 +28,7 @@ const wait_for_rebuild = async (api, mailing_id) => {
     poll_for_rebuild(
       api,
       poll_url,
-      (err, ok) => (err ? reject(err) : resolve(ok))
+      (err, count) => (err ? reject(err) : resolve(count))
     )
   );
 };
@@ -56,8 +56,8 @@ module.exports = {
       subject
     );
 
-    const rebuilt = await wait_for_rebuild(api, new_mailing_id);
+    const targeted_count = await wait_for_rebuild(api, new_mailing_id);
     const queued = await api.post(`mailer/${new_mailing_id}/queue`);
-    return queued;
+    return { targeted_count, new_mailing_id };
   }
 };
