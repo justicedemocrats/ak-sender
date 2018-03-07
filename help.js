@@ -6,7 +6,7 @@ const poll_for_rebuild = (api, poll_url, fn) =>
     .then(
       resp =>
         resp.body.finished
-          ? fn(null, res.body.results)
+          ? fn(null, resp.body.results)
           : setTimeout(() => poll_for_rebuild(api, poll_url, fn), 100)
     );
 
