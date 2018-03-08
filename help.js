@@ -48,7 +48,7 @@ module.exports = {
 
     const patched = await api
       .patch(`mailer/${new_mailing_id}`)
-      .send({ subject, html });
+      .send({ subjects: [subject], html });
 
     log(
       "Patched mailing %s with subject %s, now rebuilding",
